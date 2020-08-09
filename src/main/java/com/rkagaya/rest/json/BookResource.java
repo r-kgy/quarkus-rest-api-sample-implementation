@@ -5,7 +5,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Path("/books")
 @Produces(MediaType.APPLICATION_JSON)
@@ -30,8 +29,25 @@ public class BookResource {
     ) {
         System.out.println(booKId);
         List<Book> result = list.stream()
-                .filter(book -> book.getId() == booKId)
+                .filter(book -> book.id == booKId)
                 .collect(Collectors.toList());
         return Response.ok(result).build();
+    }
+
+    @POST
+    public Response create(
+            Book book
+    ) {
+        list.add(book);
+        return Response.status(201).build();
+    }
+
+    @DELETE
+    @Path(value = "/{bookId}")
+    public Response delete(
+            @PathParam(value = "bookId") int booKId
+    ) {
+        list.removeIf(existingBook -> existingBook.id == booKId);
+        return Response.noContent().build();
     }
 }
